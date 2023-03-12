@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chat</title>
+</head>
+<body>
+    {message}
+    <form action='/' onSubmit="document.getElementById('username').value=localStorage.getItem('username')" method="POST">
+        <input type="text" id="message" name="message" placeholder="Enter Message here">
+        <input type="hidden" id="username" name="username"><br /> <button type="submit">Send</button></form>
+</body>
+</html>

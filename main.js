@@ -1,31 +1,39 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const message = require('./message');
 const fs = require('fs');
 
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}))
 
 app.use('/login', (req,res,next) => {
-  res.send(`<form action="/" onSubmit="localStorage.setItem('username')">
-  <input type="text" id="username" name="username"><button type="submit">login</button></form>`)
+  res.sendFile(path.join(__dirname + '/views/login.html'))
 })
 
 app.get('/', (req, res, next) => {
-  fs.readFile('message.txt', (err,data) => {
-  if(err){
-    console.log(err);
-  }
-
-  res.send(`${data}<form action='/' method="POST" onSubmit="document.getElementById('username').value=localStorage.getItem('username')" method="POST">
-  <input type="text" id="message" name="message" placeholder="Enter Message here">
-  <input type="hidden" id="username" name="username"><br /> <button type="submit">Send</button></form>`)
-})
-  })
-
+  fs.readFile('message.txt', (err, data) => {
+    if (err) {
+      console.log(err);
+      next(err);
+    } else {
+      fs.readFile(path.join(__dirname, '/views/chat.html'), 'utf8', (err, html) => {
+        if (err) {
+          console.log(err);
+          next(err);
+        } else {
+          const modifiedHtml = html.replace('{message}', data);
+          res.send(modifiedHtml);
+        }
+      });
+    }
+  });
+});
 app.post('/', (req, res, next) => {
   fs.writeFile('message.txt', `${req.body.username}: ${req.body.message}`, err => err ? console.log(err) : res.redirect("/"));
+})
+
+app.use((req,res,next) => {
+  res.sendFile(path.join(__dirname + '/views/404.html'));
 })
 
 app.listen(3000);
