@@ -12,7 +12,13 @@ const getProductsFromFile = cb => {
     if (err) {
       cb([]);
     } else {
-      cb(JSON.parse(fileContent));
+      try{
+        cb(JSON.parse(fileContent));
+      } catch (error) {
+        if(error.message === "Unexpected end of JSON input"){
+          cb([]);
+        }
+      }
     }
   });
 };
